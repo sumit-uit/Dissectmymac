@@ -24,11 +24,14 @@ public enum StartupItems {
             (URL(fileURLWithPath: "/Library/LaunchAgents"), .globalAgent),
             (URL(fileURLWithPath: "/Library/LaunchDaemons"), .daemon),
         ]
-        return sources.flatMap { folder, scope in
+        var items: [StartupItem] = []
+        for (folder, scope) in sources {
             let files = (try? FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: nil)) ?? []
-            return files.filter { $0.pathExtension == "plist" }.compactMap { parse($0, scope: scope) }
+            for file in files where file.pathExtension == "plist" {
+                if let item = parse(file, scope: scope) { items.append(item) }
+            }
         }
-        .sorted { $0.label.localizedCaseInsensitiveCompare($1.label) == .orderedAscending }
+        return items.sorted { $0.label.localizedCaseInsensitiveCompare($1.label) == .orderedAscending }
     }
 
     static func parse(_ url: URL, scope: StartupItem.Scope) -> StartupItem? {

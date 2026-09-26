@@ -76,9 +76,9 @@ public final class SystemMonitor: @unchecked Sendable {
         let wired = UInt64(stats.wire_count) * page
         let compressed = UInt64(stats.compressor_page_count) * page
         // "App memory" as Activity Monitor reports it.
-        let internal = UInt64(stats.internal_page_count) * page
+        let internalBytes = UInt64(stats.internal_page_count) * page
         let purgeable = UInt64(stats.purgeable_count) * page
-        let appMemory = internal > purgeable ? internal - purgeable : 0
+        let appMemory = internalBytes > purgeable ? internalBytes - purgeable : 0
         let cached = (UInt64(stats.external_page_count) + UInt64(stats.purgeable_count)) * page
         return MemoryStats(
             total: ProcessInfo.processInfo.physicalMemory,
