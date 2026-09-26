@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: write
+
 jobs:
   swiftpm:
     name: Build & test (SwiftPM)
@@ -16,7 +19,7 @@ jobs:
         run: swift test
 
   app:
-    name: Build .app (XcodeGen)
+    name: Build .app + UI tour (XcodeGen)
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
@@ -24,7 +27,7 @@ jobs:
         run: brew install xcodegen
       - name: Generate project
         run: xcodegen generate
-      - name: Build app (unsigned)
+      - name: Build app (Release, unsigned)
         run: |
           xcodebuild -project DissectMyMac.xcodeproj -scheme DissectMyMac -configuration Release \
             -derivedDataPath build CODE_SIGNING_ALLOWED=NO build
@@ -33,3 +36,53 @@ jobs:
         with:
           name: DissectMyMac-unsigned
           path: build/Build/Products/Release/DissectMyMac.app
+
+      - name: UI tour (clicks through every screen and screenshots it)
+        id: uitests
+        continue-on-error: true
+        run: |
+          xcodebuild -project DissectMyMac.xcodeproj -scheme DissectMyMac -configuration Debug \
+            -destination 'platform=macOS' -derivedDataPath build-ui -resultBundlePath UITour.xcresult \
+            -only-testing:DissectMyMacUITests test 2>&1 | tail -80
+          exit ${PIPESTATUS[0]}
+      - name: Export screenshots
+        if: always()
+        run: |
+          mkdir -p screenshots
+          if [ -d UITour.xcresult ]; then
+            xcrun xcresulttool export attachments --path UITour.xcresult --output-path screenshots || true
+            # Rename files to their human-readable attachment names.
+            if [ -f screenshots/manifest.json ]; then
+              python3 - <<'PY'
+          import json, os, re
+          manifest = json.load(open("screenshots/manifest.json"))
+          for test in manifest:
+              for a in test.get("attachments", []):
+                  src = os.path.join("screenshots", a["exportedFileName"])
+                  name = re.sub(r"_\d+_[0-9A-F-]+\.png$", ".png", a.get("suggestedHumanReadableName", a["exportedFileName"]))
+                  name = re.sub(r"[^A-Za-z0-9 ._&+-]", "", name)
+                  if os.path.exists(src):
+                      os.rename(src, os.path.join("screenshots", name))
+          PY
+            fi
+          fi
+          ls -la screenshots
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-screenshots
+          path: screenshots
+      - name: Publish screenshots to the 'screenshots' branch
+        if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          cd screenshots
+          git init -q -b screenshots
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "UI screenshots for ${GITHUB_SHA}" || exit 0
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" screenshots
+      - name: Fail if UI tour failed
+        if: steps.uitests.outcome == 'failure'
+        run: exit 1

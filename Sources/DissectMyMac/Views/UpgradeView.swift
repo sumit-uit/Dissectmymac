@@ -73,14 +73,33 @@ struct LicenseEntry: View {
 
 struct SettingsView: View {
     @EnvironmentObject private var license: LicenseManager
+    @EnvironmentObject private var model: AppModel
+    @EnvironmentObject private var updater: UpdaterModel
     @AppStorage("theme") private var themeID = AppTheme.system.rawValue
     @AppStorage("showMenuBarExtra") private var showMenuBarExtra = true
+    @AppStorage("menuBarDisplay") private var menuBarDisplay = MenuBarDisplay.cpu.rawValue
+    @AppStorage("watchTrash") private var watchTrash = true
     @State private var key = ""
 
     var body: some View {
         TabView {
             Form {
                 Toggle("Show live monitor in the menu bar", isOn: $showMenuBarExtra)
+                Picker("Menu bar shows", selection: $menuBarDisplay) {
+                    ForEach(MenuBarDisplay.allCases) { Text($0.title).tag($0.rawValue) }
+                }
+                .disabled(!showMenuBarExtra)
+                Toggle("Offer to remove leftovers when I trash an app", isOn: $watchTrash)
+                    .onChange(of: watchTrash) { _, enabled in
+                        model.setTrashWatching(enabled)
+                        if enabled { Notifications.requestPermission() }
+                    }
+                if updater.isAvailable {
+                    Toggle("Automatically check for updates", isOn: Binding(
+                        get: { updater.automaticallyChecks }, set: { updater.automaticallyChecks = $0 }))
+                    Button("Check for Updates Now") { updater.checkForUpdates() }
+                        .disabled(!updater.canCheckForUpdates)
+                }
                 Picker("Theme", selection: $themeID) {
                     ForEach(AppTheme.allCases) { theme in
                         Text(theme.isPremium && !license.isPro ? "\(theme.title) (Pro)" : theme.title).tag(theme.rawValue)
@@ -123,7 +142,7 @@ struct SettingsView: View {
             .padding()
             .tabItem { Label("Privacy", systemImage: "hand.raised") }
         }
-        .frame(width: 520, height: 300)
+        .frame(width: 540, height: 380)
         .sheet(item: $license.upgradePrompt) { feature in
             UpgradeView(highlight: feature).environmentObject(license)
         }

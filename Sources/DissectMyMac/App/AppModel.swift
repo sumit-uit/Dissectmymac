@@ -4,7 +4,7 @@ import Foundation
 import SwiftUI
 
 enum SidebarSection: String, CaseIterable, Identifiable {
-    case storage, largeFiles, search, liveStats
+    case storage, spaceOverview, largeFiles, search, liveStats
     case junk, uninstaller, leftovers, duplicates, devCleaner, startup
 
     var id: String { rawValue }
@@ -12,6 +12,7 @@ enum SidebarSection: String, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .storage: return "Storage Map"
+        case .spaceOverview: return "Space Overview"
         case .largeFiles: return "Large & Old Files"
         case .search: return "Power Search"
         case .liveStats: return "Live Monitor"
@@ -27,6 +28,7 @@ enum SidebarSection: String, CaseIterable, Identifiable {
     var systemImage: String {
         switch self {
         case .storage: return "square.grid.3x3.square"
+        case .spaceOverview: return "chart.pie"
         case .largeFiles: return "doc.badge.clock"
         case .search: return "magnifyingglass"
         case .liveStats: return "gauge.with.dots.needle.33percent"
@@ -52,7 +54,7 @@ enum SidebarSection: String, CaseIterable, Identifiable {
         }
     }
 
-    static let analyze: [SidebarSection] = [.storage, .largeFiles, .search, .liveStats]
+    static let analyze: [SidebarSection] = [.storage, .spaceOverview, .largeFiles, .search, .liveStats]
     static let clean: [SidebarSection] = [.junk, .uninstaller, .leftovers, .duplicates, .devCleaner, .startup]
 }
 
@@ -71,7 +73,50 @@ final class AppModel: ObservableObject {
     @Published var collected: [FileNode] = []
     @Published var notice: String?
 
+    /// An app the user just dragged to the Trash; ContentView offers to clean its leftovers.
+    @Published var trashedApp: InstalledApp?
+
     private var scanTask: Task<Void, Never>?
+    private var trashWatcher: TrashWatcher?
+
+    init() {
+        let environment = ProcessInfo.processInfo.environment
+        if let autoscan = environment["DMM_AUTOSCAN"] {
+            // Used by UI tests and demos: "demo" builds a sample folder so screenshots are reproducible.
+            let url = autoscan == "demo" ? DemoData.makeSampleFolder() : URL(fileURLWithPath: autoscan)
+            scan(url)
+        }
+        switch environment["DMM_ONBOARDING"] {
+        case "show": UserDefaults.standard.set(false, forKey: "didOnboard")
+        case "skip": UserDefaults.standard.set(true, forKey: "didOnboard")
+        default: break
+        }
+        let watchTrash = UserDefaults.standard.object(forKey: "watchTrash") == nil || UserDefaults.standard.bool(forKey: "watchTrash")
+        if watchTrash, environment["DMM_UI_TEST"] == nil {
+            setTrashWatching(true)
+        }
+    }
+
+    // MARK: Trash watcher
+
+    func setTrashWatching(_ enabled: Bool) {
+        if enabled {
+            guard trashWatcher == nil else { return }
+            let watcher = TrashWatcher { app in
+                Task { @MainActor [weak self] in self?.appWasTrashed(app) }
+            }
+            if watcher.start() { trashWatcher = watcher }
+        } else {
+            trashWatcher?.stop()
+            trashWatcher = nil
+        }
+    }
+
+    private func appWasTrashed(_ app: InstalledApp) {
+        trashedApp = app
+        Notifications.post(title: "\(app.name) moved to Trash",
+                           body: "DissectMyMac found files it left behind. Click to review and remove them.")
+    }
 
     func scan(_ url: URL) {
         scanTask?.cancel()

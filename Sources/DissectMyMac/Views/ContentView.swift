@@ -7,6 +7,7 @@ struct ContentView: View {
     @EnvironmentObject private var license: LicenseManager
     @State private var hasFullDiskAccess = FinderActions.hasFullDiskAccess
     @State private var showingUpgrade = false
+    @AppStorage("didOnboard") private var didOnboard = false
 
     var body: some View {
         NavigationSplitView {
@@ -31,6 +32,12 @@ struct ContentView: View {
         }
         .sheet(isPresented: $showingUpgrade) {
             UpgradeView(highlight: nil).environmentObject(license)
+        }
+        .sheet(isPresented: Binding(get: { !didOnboard }, set: { if !$0 { didOnboard = true } })) {
+            OnboardingView { didOnboard = true }.environmentObject(model)
+        }
+        .sheet(item: $model.trashedApp) { app in
+            TrashedAppView(app: app).environmentObject(model).environmentObject(license)
         }
         .alert("Done", isPresented: Binding(get: { model.notice != nil }, set: { if !$0 { model.notice = nil } })) {
             Button("OK") { model.notice = nil }
@@ -95,6 +102,7 @@ struct ContentView: View {
     private var detail: some View {
         switch model.selection ?? .storage {
         case .storage: StorageView()
+        case .spaceOverview: SpaceOverviewView()
         case .largeFiles: LargeFilesView()
         case .search: SearchView()
         case .liveStats: LiveStatsView()

@@ -8,12 +8,18 @@ let package = Package(
         .library(name: "DissectCore", targets: ["DissectCore"]),
         .executable(name: "DissectMyMac", targets: ["DissectMyMac"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.6.0"),
+    ],
     targets: [
         // All scanning, cleaning, licensing and system logic. No UI, fully unit-tested.
         .target(name: "DissectCore"),
         // SwiftUI app. `swift run DissectMyMac` for quick iteration; use project.yml (XcodeGen)
         // to produce a signed, notarizable .app bundle.
-        .executableTarget(name: "DissectMyMac", dependencies: ["DissectCore"]),
+        .executableTarget(
+            name: "DissectMyMac",
+            dependencies: ["DissectCore", .product(name: "Sparkle", package: "Sparkle")]
+        ),
         .testTarget(name: "DissectCoreTests", dependencies: ["DissectCore"]),
     ]
 )

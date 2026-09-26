@@ -20,10 +20,25 @@ final class StatsModel: ObservableObject {
     @Published private(set) var upload: Double = 0
     @Published private(set) var history: [Sample] = []
     @Published private(set) var thermal: ProcessInfo.ThermalState = .nominal
+    @Published private(set) var topByCPU: [ProcessSample] = []
+    @Published private(set) var topByMemory: [ProcessSample] = []
 
     private let monitor = SystemMonitor()
+    private let processMonitor = ProcessMonitor()
     private var timer: Timer?
     private var subscribers = 0
+    /// Process sampling is heavier, so it only runs while a view showing processes is open.
+    private var processSubscribers = 0
+
+    func startProcesses() {
+        processSubscribers += 1
+        start()
+    }
+
+    func stopProcesses() {
+        processSubscribers = max(0, processSubscribers - 1)
+        stop()
+    }
 
     func start() {
         subscribers += 1
@@ -52,6 +67,11 @@ final class StatsModel: ObservableObject {
             upload = net.up
         }
         thermal = monitor.thermalState
+        if processSubscribers > 0 {
+            let samples = processMonitor.sample()
+            topByCPU = Array(samples.sorted { $0.cpu > $1.cpu }.prefix(8))
+            topByMemory = Array(samples.sorted { $0.memory > $1.memory }.prefix(8))
+        }
         history.append(Sample(time: Date(), cpu: cpu, memory: memory?.usedFraction ?? 0))
         if history.count > 90 { history.removeFirst(history.count - 90) }
     }
@@ -101,11 +121,19 @@ struct LiveStatsView: View {
                     .frame(height: 220)
                 }
                 .padding(.horizontal)
+
+                HStack(alignment: .top, spacing: 16) {
+                    ProcessList(title: "Top CPU", processes: stats.topByCPU) {
+                        $0.cpu.formatted(.percent.precision(.fractionLength(0)))
+                    }
+                    ProcessList(title: "Top Memory", processes: stats.topByMemory) { ByteFormat.string($0.memory) }
+                }
+                .padding(.horizontal)
             }
             .padding(.bottom)
         }
-        .onAppear { stats.start() }
-        .onDisappear { stats.stop() }
+        .onAppear { stats.startProcesses() }
+        .onDisappear { stats.stopProcesses() }
     }
 
     private func batteryDetail(_ battery: BatteryStats) -> String {
@@ -157,6 +185,72 @@ struct StatCard: View {
     }
 }
 
+struct ProcessList: View {
+    let title: String
+    let processes: [ProcessSample]
+    let value: (ProcessSample) -> String
+
+    var body: some View {
+        GroupBox(title) {
+            VStack(spacing: 6) {
+                if processes.isEmpty {
+                    Text("Sampling…").foregroundStyle(.secondary).frame(maxWidth: .infinity)
+                }
+                ForEach(processes) { process in
+                    HStack {
+                        Text(process.name).lineLimit(1)
+                        Spacer()
+                        Text(value(process)).monospacedDigit().foregroundStyle(.secondary)
+                    }
+                    .contextMenu {
+                        Button("Quit \(process.name)") { NSRunningApplication(processIdentifier: process.pid)?.terminate() }
+                    }
+                }
+            }
+            .padding(4)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+/// What the menu bar item shows next to its icon.
+enum MenuBarDisplay: String, CaseIterable, Identifiable {
+    case icon, cpu, memory, cpuAndMemory, freeDisk
+    var id: String { rawValue }
+    var title: String {
+        switch self {
+        case .icon: return "Icon only"
+        case .cpu: return "CPU"
+        case .memory: return "Memory"
+        case .cpuAndMemory: return "CPU + Memory"
+        case .freeDisk: return "Free disk space"
+        }
+    }
+}
+
+struct MenuBarLabel: View {
+    @ObservedObject var stats: StatsModel
+    @AppStorage("menuBarDisplay") private var display = MenuBarDisplay.cpu.rawValue
+
+    var body: some View {
+        let cpu = stats.cpu.formatted(.percent.precision(.fractionLength(0)))
+        let memory = stats.memory.map { $0.usedFraction.formatted(.percent.precision(.fractionLength(0))) } ?? "–"
+        let disk = stats.disk.map { ByteFormat.string($0.available) } ?? "–"
+        HStack(spacing: 4) {
+            Image(systemName: "internaldrive")
+            switch MenuBarDisplay(rawValue: display) ?? .cpu {
+            case .icon: EmptyView()
+            case .cpu: Text("CPU \(cpu)")
+            case .memory: Text("MEM \(memory)")
+            case .cpuAndMemory: Text("\(cpu) · \(memory)")
+            case .freeDisk: Text(disk)
+            }
+        }
+        .monospacedDigit()
+        .onAppear { stats.start() }
+    }
+}
+
 /// Compact monitor shown from the menu bar (Stats / iStat Menus style).
 struct MenuBarStatsView: View {
     @EnvironmentObject private var stats: StatsModel
@@ -180,6 +274,18 @@ struct MenuBarStatsView: View {
             if let battery = stats.battery {
                 row("Battery", "\(battery.percent)%\(battery.isCharging ? " ⚡︎" : "")", Double(battery.percent) / 100)
             }
+            if !stats.topByCPU.isEmpty {
+                Divider()
+                Text("Top processes").font(.caption).foregroundStyle(.secondary)
+                ForEach(stats.topByCPU.prefix(5)) { process in
+                    HStack {
+                        Text(process.name).lineLimit(1)
+                        Spacer()
+                        Text(process.cpu.formatted(.percent.precision(.fractionLength(0)))).monospacedDigit()
+                    }
+                    .font(.callout)
+                }
+            }
             Divider()
             HStack {
                 Button("Open DissectMyMac") {
@@ -192,8 +298,8 @@ struct MenuBarStatsView: View {
         }
         .padding()
         .frame(width: 280)
-        .onAppear { stats.start() }
-        .onDisappear { stats.stop() }
+        .onAppear { stats.startProcesses() }
+        .onDisappear { stats.stopProcesses() }
     }
 
     private func row(_ title: String, _ value: String, _ fraction: Double) -> some View {

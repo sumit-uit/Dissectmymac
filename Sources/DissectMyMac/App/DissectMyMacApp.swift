@@ -7,6 +7,7 @@ struct DissectMyMacApp: App {
     @StateObject private var model = AppModel()
     @StateObject private var license = LicenseManager()
     @StateObject private var stats = StatsModel()
+    @StateObject private var updater = UpdaterModel()
     @AppStorage("showMenuBarExtra") private var showMenuBarExtra = true
     @AppStorage("theme") private var themeID = AppTheme.system.rawValue
 
@@ -26,6 +27,10 @@ struct DissectMyMacApp: App {
                 .frame(minWidth: 1000, minHeight: 640)
         }
         .commands {
+            CommandGroup(after: .appInfo) {
+                Button("Check for Updates…") { updater.checkForUpdates() }
+                    .disabled(!updater.canCheckForUpdates)
+            }
             CommandGroup(after: .newItem) {
                 Button("Scan Home Folder") { model.scan(FileManager.default.homeDirectoryForCurrentUser) }
                     .keyboardShortcut("r", modifiers: [.command])
@@ -36,16 +41,20 @@ struct DissectMyMacApp: App {
             }
         }
 
-        MenuBarExtra("DissectMyMac", systemImage: "internaldrive", isInserted: $showMenuBarExtra) {
+        MenuBarExtra(isInserted: $showMenuBarExtra) {
             MenuBarStatsView()
                 .environmentObject(stats)
                 .environment(\.appTheme, theme)
+        } label: {
+            MenuBarLabel(stats: stats)
         }
         .menuBarExtraStyle(.window)
 
         Settings {
             SettingsView()
                 .environmentObject(license)
+                .environmentObject(model)
+                .environmentObject(updater)
                 .environment(\.appTheme, theme)
         }
     }

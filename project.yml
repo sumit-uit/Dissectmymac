@@ -5,12 +5,21 @@ options:
   deploymentTarget:
     macOS: "14.0"
   createIntermediateGroups: true
+packages:
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    from: "2.6.0"
 settings:
   base:
     MARKETING_VERSION: "1.0.0"
     CURRENT_PROJECT_VERSION: "1"
     SWIFT_VERSION: "5.0"
     DEVELOPMENT_TEAM: ""   # your Apple Developer Team ID
+  configs:
+    Debug:
+      # Ad-hoc signing so the app and UI tests run locally and in CI without a certificate.
+      CODE_SIGN_IDENTITY: "-"
+      CODE_SIGN_STYLE: Manual
 targets:
   DissectCore:
     type: framework
@@ -23,9 +32,12 @@ targets:
   DissectMyMac:
     type: application
     platform: macOS
-    sources: [Sources/DissectMyMac]
+    sources:
+      - Sources/DissectMyMac
+      - Support/Assets.xcassets
     dependencies:
       - target: DissectCore
+      - package: Sparkle
     info:
       path: Support/Info.plist
       properties:
@@ -33,6 +45,9 @@ targets:
         LSApplicationCategoryType: public.app-category.utilities
         LSMinimumSystemVersion: "14.0"
         NSHumanReadableCopyright: "© 2026 DissectMyMac"
+        # Auto-updates: uncomment once you host an appcast and generate keys (README → Releasing).
+        # SUFeedURL: https://dissectmymac.app/appcast.xml
+        # SUPublicEDKey: YOUR_SPARKLE_PUBLIC_KEY
     entitlements:
       path: Support/DissectMyMac.entitlements
       properties:
@@ -42,8 +57,11 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.dissectmymac.app
-        ENABLE_HARDENED_RUNTIME: YES
-        CODE_SIGN_STYLE: Automatic
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+      configs:
+        Release:
+          ENABLE_HARDENED_RUNTIME: YES
+          CODE_SIGN_STYLE: Automatic
   DissectCoreTests:
     type: bundle.unit-test
     platform: macOS
@@ -53,10 +71,22 @@ targets:
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
+  DissectMyMacUITests:
+    type: bundle.ui-testing
+    platform: macOS
+    sources: [UITests]
+    dependencies:
+      - target: DissectMyMac
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: DissectMyMac
+        PRODUCT_BUNDLE_IDENTIFIER: com.dissectmymac.uitests
 schemes:
   DissectMyMac:
     build:
       targets:
         DissectMyMac: all
     test:
-      targets: [DissectCoreTests]
+      config: Debug
+      targets: [DissectCoreTests, DissectMyMacUITests]

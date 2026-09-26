@@ -9,13 +9,16 @@ account and no telemetry.
 | | Feature | Inspired by | Free | Pro |
 |---|---|---|:-:|:-:|
 | **Analyze** | Storage map: two-level squarified treemap, drill-down, breadcrumbs, size-by-type breakdown | DissectMac, DaisyDisk, GrandPerspective | ✅ | ✅ |
+| | Space Overview: used / purgeable / free, what's inside "System Data", Time Machine local snapshots | DissectMac, DaisyDisk | ✅ | ✅ |
 | | Collector: stage files from anywhere (right-click / drag), review, then move to Trash | DaisyDisk | ✅ | ✅ |
 | | Large & old files: biggest files, and big files untouched for a year | OmniDiskSweeper | ✅ | ✅ |
 | | Power search: wildcards, kind/type/size filters | DissectMac | ✅ | ✅ |
 | | Live monitor: CPU, memory, disk, network, battery, thermal state, history chart | Stats, iStat Menus | ✅ | ✅ |
-| | Menu bar monitor | Stats | ✅ | ✅ |
+| | Menu bar monitor with live numbers (CPU / memory / free disk) and top processes | Stats | ✅ | ✅ |
+| | Top processes by CPU and memory | Activity Monitor | ✅ | ✅ |
 | **Clean** | Junk cleaner: caches, logs, crash reports, iOS updates, Xcode, package managers, browsers, Trash, installers | CleanMyMac, DevCleaner | scan | ✅ |
 | | App uninstaller: app + containers, caches, prefs, launch agents; drag an app onto the window | AppCleaner, Pearcleaner | scan | ✅ |
+| | Trash watcher: drag an app to the Trash and get offered its leftovers | AppCleaner SmartDelete | detect | ✅ |
 | | Leftover cleanup: orphaned files from apps deleted long ago | DissectMac, Pearcleaner | scan | ✅ |
 | | Duplicate finder: size → partial hash → full SHA-256 | Gemini, dupeGuru | scan | ✅ |
 | | Developer cleanup: `node_modules`, `Pods`, `target`, `.build`, `venv`, `.next`, … | npkill, DevCleaner | scan | ✅ |
@@ -66,6 +69,16 @@ xcodegen generate && open DissectMyMac.xcodeproj
 On first launch, grant **Full Disk Access** (System Settings → Privacy & Security). Without it, macOS hides Mail,
 Safari, Messages and other protected folders from any app. The app shows a banner with a shortcut to the setting.
 
+## Automated UI tour (screenshots)
+
+Every push runs `UITests/ScreenTourTests.swift` on a GitHub macOS runner. It launches the app with a demo folder
+(`DMM_AUTOSCAN=demo`), clicks through onboarding and every sidebar section like a user, presses the main buttons,
+and screenshots each step. The screenshots are uploaded as the `ui-screenshots` artifact, and pushes to `main`
+also publish them to the `screenshots` branch.
+
+Useful launch environment variables (debug builds): `DMM_UNLOCK_PRO=1`, `DMM_AUTOSCAN=demo|/path`,
+`DMM_ONBOARDING=show|skip`.
+
 ## Licensing (no server)
 
 1. `pip install cryptography && python3 scripts/license_tool.py keygen`
@@ -80,6 +93,13 @@ Sandbox. That rules out the Mac App Store. Distribute directly instead:
 
 1. Archive in Xcode, sign with a **Developer ID Application** certificate (Apple Developer Program, $99/yr).
 2. Notarize: `xcrun notarytool submit DissectMyMac.zip --keychain-profile … --wait`, then `xcrun stapler staple`.
-3. Ship a `.dmg` from your website. For auto-updates, add [Sparkle](https://sparkle-project.org) with an appcast hosted on GitHub Releases/Pages.
+3. Ship a `.dmg` from your website.
+
+### Releasing updates (Sparkle, already integrated)
+
+1. Generate update-signing keys once: run `generate_keys`, which ships in Sparkle's release archive. It prints your public EdDSA key.
+2. In `project.yml`, uncomment `SUFeedURL` (for example `https://<you>.github.io/dissectmymac/appcast.xml`) and `SUPublicEDKey`.
+3. For each release, zip the notarized app and run `generate_appcast <folder>`. Upload the zip and `appcast.xml` to GitHub Releases/Pages.
+4. The app checks automatically and shows **Check for Updates…** in the app menu. Updater code is inactive until both keys are set.
 
 See [`docs/BUSINESS.md`](docs/BUSINESS.md) for the revenue model and launch plan.
