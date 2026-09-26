@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  swiftpm:
+    name: Build & test (SwiftPM)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: swift build
+      - name: Test
+        run: swift test
+
+  app:
+    name: Build .app (XcodeGen)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate project
+        run: xcodegen generate
+      - name: Build app (unsigned)
+        run: |
+          xcodebuild -project DissectMyMac.xcodeproj -scheme DissectMyMac -configuration Release \
+            -derivedDataPath build CODE_SIGNING_ALLOWED=NO build
+      - name: Upload app
+        uses: actions/upload-artifact@v4
+        with:
+          name: DissectMyMac-unsigned
+          path: build/Build/Products/Release/DissectMyMac.app

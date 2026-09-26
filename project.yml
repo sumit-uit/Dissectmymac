@@ -1,0 +1,62 @@
+# Generates DissectMyMac.xcodeproj:  brew install xcodegen && xcodegen generate
+name: DissectMyMac
+options:
+  bundleIdPrefix: com.dissectmymac
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "5.0"
+    DEVELOPMENT_TEAM: ""   # your Apple Developer Team ID
+targets:
+  DissectCore:
+    type: framework
+    platform: macOS
+    sources: [Sources/DissectCore]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dissectmymac.core
+        GENERATE_INFOPLIST_FILE: YES
+  DissectMyMac:
+    type: application
+    platform: macOS
+    sources: [Sources/DissectMyMac]
+    dependencies:
+      - target: DissectCore
+    info:
+      path: Support/Info.plist
+      properties:
+        CFBundleDisplayName: DissectMyMac
+        LSApplicationCategoryType: public.app-category.utilities
+        LSMinimumSystemVersion: "14.0"
+        NSHumanReadableCopyright: "© 2026 DissectMyMac"
+    entitlements:
+      path: Support/DissectMyMac.entitlements
+      properties:
+        # Not sandboxed: a disk analyzer / uninstaller must read the whole disk and remove other apps' files.
+        # Distribute directly (Developer ID + notarization), not via the Mac App Store.
+        com.apple.security.app-sandbox: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dissectmymac.app
+        ENABLE_HARDENED_RUNTIME: YES
+        CODE_SIGN_STYLE: Automatic
+  DissectCoreTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources: [Tests/DissectCoreTests]
+    dependencies:
+      - target: DissectCore
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  DissectMyMac:
+    build:
+      targets:
+        DissectMyMac: all
+    test:
+      targets: [DissectCoreTests]
