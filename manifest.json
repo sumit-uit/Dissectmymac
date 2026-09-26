@@ -1,0 +1,212 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "1CAC2A36-3D4E-45EA-8DEF-2C96236D3E07.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "01 Upgrade sheet_0_716C2F55-D9FC-4E92-9FF6-16AE2AB74BE0.png",
+        "timestamp" : 1790398193.13
+      }
+    ],
+    "testIdentifier" : "ScreenTourTests/testFreeUserSeesUpgrade()",
+    "testIdentifierURL" : "test://com.apple.xcode/DissectMyMac/DissectMyMacUITests/ScreenTourTests/testFreeUserSeesUpgrade"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "095BE49E-C981-4885-8B2C-CC0E6F68BFCD.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "21 Settings_0_ED652658-E857-4501-A906-C63F63C894C9.png",
+        "timestamp" : 1790398276.811
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "1DF75EA6-B7A3-4C13-9C9D-FE828590E621.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "20 Startup Items_0_EE2D200B-96D8-4175-9139-C0AC66454D5B.png",
+        "timestamp" : 1790398274.507
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "3C71554D-BEB5-4191-89CA-0A668192B5D8.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "19 Developer Cleanup_0_3D11EAF1-F336-4DF3-8950-9B71F7EA5F29.png",
+        "timestamp" : 1790398270.885
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "084557FA-7EB9-4B24-9DEA-5AF244C1D2E6.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "18 Duplicate Finder - results_0_29ED53E1-4E7A-4B59-B966-E2CA66C24C19.png",
+        "timestamp" : 1790398267.239
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "D5CDDBED-61B4-45D3-BE0F-DC852C24A295.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "17 Duplicate Finder_0_4AA23257-D489-4DAE-8E24-24700E04B7FF.png",
+        "timestamp" : 1790398262.574
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "3A430D8D-5539-4757-971C-0B2940226195.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "16 Leftover Cleanup - results_0_0D3C6D57-AE55-4BC2-98E1-930425C8823F.png",
+        "timestamp" : 1790398258.968
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "1CE75183-0445-4698-8EEB-D0F5A794269E.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "15 Leftover Cleanup_0_A0E34704-7A2B-4116-9027-9D8061CF925B.png",
+        "timestamp" : 1790398254.399
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "84D440C9-79E7-497C-8890-340B41A46C64.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "14 App Uninstaller - app selected_0_BD10E49D-8C4C-4BB1-8FA1-2B78B62D5D10.png",
+        "timestamp" : 1790398250.622
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "A3D42473-624B-4115-BD81-E3554FC2FB28.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "13 App Uninstaller_0_629DA579-28F6-4ED4-95F3-C2C262253F2C.png",
+        "timestamp" : 1790398245.114
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "4811AEEA-B14F-4B66-8FD1-3A1E3BA272F3.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "12 Junk Cleaner - results_0_762178B8-CC49-4CD9-B05A-EFD133C472ED.png",
+        "timestamp" : 1790398241.458
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "5A4673D7-0982-427C-B521-5EA0A2159577.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "11 Junk Cleaner_0_A971472E-BB30-4195-91CC-992F64EE5BCA.png",
+        "timestamp" : 1790398236.836
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "723C4EAA-5122-402B-9D1A-BA36E83DE8AE.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "10 Live Monitor_0_D876F9D6-ACB0-4F12-945A-94FE215882A4.png",
+        "timestamp" : 1790398233.126
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "C93A3BAC-29B0-47FC-936C-C6D6744DBCBF.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "09 Power Search - results_0_70B72D88-5265-4029-B462-9B4EE5D448CD.png",
+        "timestamp" : 1790398229.327
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "4EBD4AEF-535F-4953-B293-8C0498789EB0.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "08 Power Search_0_763B3BD2-75A0-4D6B-A425-F1297FD08126.png",
+        "timestamp" : 1790398226.567
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "FD9EDB90-6628-4A63-B933-B5868DB2D234.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "07 Large & Old Files_0_B3BAEEF5-6A0A-4DE7-A7E3-92D87A9F922F.png",
+        "timestamp" : 1790398222.811
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "08E911ED-98C1-4C68-832C-E9DB0BD13469.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "06 Space Overview_0_C13BDE68-E19C-4FE5-9005-2E945CDC4692.png",
+        "timestamp" : 1790398218.971
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "531A2D3B-1B9D-425D-BC9C-F7F4E1B14C43.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "05 Storage Map - drilled in_0_30AF28FC-163D-4083-8AC1-E460588D4CCE.png",
+        "timestamp" : 1790398215.249
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "B293BBFF-7C0B-440A-9014-6B5465646226.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "04 Storage Map_0_3E93B9B2-078A-405A-BAA6-8D5163CFE864.png",
+        "timestamp" : 1790398213.776
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "E52DDD15-F42C-476E-8575-5F0D92596696.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "03 onboarding-3-first-scan_0_52EC70F4-B7A4-4D7A-A58D-8E4B1ECB61D8.png",
+        "timestamp" : 1790398205.578
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "7DD9272B-276F-446B-B3E3-2EEC05FEC0FE.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "02 onboarding-2-full-disk-access_0_7F5F6F29-203D-45FC-B8D5-F57EC1284153.png",
+        "timestamp" : 1790398200.985
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "233a2b69dbd075989f127dcf5d40d17cf03a73ea",
+        "deviceName" : "My Mac",
+        "exportedFileName" : "32BAC8F9-7983-4E8D-8C0E-9CB7D27114F8.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "01 onboarding-1-welcome_0_09D11237-83F6-43A7-B37E-373E229ACF90.png",
+        "timestamp" : 1790398196.364
+      }
+    ],
+    "testIdentifier" : "ScreenTourTests/testTourAsProUser()",
+    "testIdentifierURL" : "test://com.apple.xcode/DissectMyMac/DissectMyMacUITests/ScreenTourTests/testTourAsProUser"
+  }
+]
