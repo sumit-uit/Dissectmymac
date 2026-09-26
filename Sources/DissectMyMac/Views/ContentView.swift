@@ -24,7 +24,7 @@ struct ContentView: View {
         } detail: {
             VStack(spacing: 0) {
                 if !hasFullDiskAccess { fullDiskAccessBanner }
-                detail.frame(maxWidth: .infinity, maxHeight: .infinity)
+                detail.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
         }
         .sheet(item: $license.upgradePrompt) { feature in

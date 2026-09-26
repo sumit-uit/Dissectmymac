@@ -22,9 +22,9 @@ struct LeftoversView: View {
                 ProgressView("Comparing ~/Library with your installed apps…").frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if !hasScanned {
                 ContentUnavailableView("Find orphaned files", systemImage: "shippingbox",
-                                       description: Text("Apple's own files and anything owned by an installed app are never listed."))
+                                       description: Text("Apple's own files and anything owned by an installed app are never listed.")).frame(maxHeight: .infinity)
             } else if items.isEmpty {
-                ContentUnavailableView("No leftovers found", systemImage: "checkmark.circle")
+                ContentUnavailableView("No leftovers found", systemImage: "checkmark.circle").frame(maxHeight: .infinity)
             } else {
                 Text("Review before removing: an item can belong to a helper tool or an app installed outside /Applications.")
                     .font(.callout).foregroundStyle(.secondary)

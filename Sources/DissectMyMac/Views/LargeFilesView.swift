@@ -68,7 +68,7 @@ struct LargeFilesView: View {
                     if files.isEmpty {
                         ContentUnavailableView("No files over \(Int(minimumMB.rounded())) MB",
                                                systemImage: "doc.badge.clock",
-                                               description: Text("Lower the minimum size to see smaller files."))
+                                               description: Text("Lower the minimum size to see smaller files.")).frame(maxHeight: .infinity)
                     }
                 }
                 .contextMenu(forSelectionType: FileNode.ID.self) { ids in

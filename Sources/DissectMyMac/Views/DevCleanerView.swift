@@ -34,9 +34,9 @@ struct DevCleanerView: View {
                 ProgressView("Searching for project build folders…").frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if !hasScanned {
                 ContentUnavailableView("Reclaim space from old projects", systemImage: "hammer",
-                                       description: Text("Build folders are only matched when the project file (package.json, Cargo.toml, Podfile…) is next to them."))
+                                       description: Text("Build folders are only matched when the project file (package.json, Cargo.toml, Podfile…) is next to them.")).frame(maxHeight: .infinity)
             } else if artifacts.isEmpty {
-                ContentUnavailableView("No build folders found", systemImage: "checkmark.circle")
+                ContentUnavailableView("No build folders found", systemImage: "checkmark.circle").frame(maxHeight: .infinity)
             } else {
                 HStack {
                     Picker("Select untouched for", selection: $olderThanDays) {

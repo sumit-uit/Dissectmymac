@@ -130,7 +130,7 @@ struct UninstallerView: View {
             }
         } else {
             ContentUnavailableView("Select an app", systemImage: "app.dashed",
-                                   description: Text("Pick an app on the left, or drag one from Finder onto this window."))
+                                   description: Text("Pick an app on the left, or drag one from Finder onto this window.")).frame(maxHeight: .infinity)
         }
     }
 
@@ -154,9 +154,15 @@ struct UninstallerView: View {
         selectedApp = app
         includeApp = !app.isSystemApp
         leftovers = []
+        if app.size == 0 {
+            Task {
+                let sized = await Task.detached { AppCatalog.app(at: app.url, computeSize: true) }.value
+                if let sized, selectedApp?.id == sized.id { selectedApp = sized }
+            }
+        }
         Task {
             let found = await Task.detached { LeftoverScanner.leftovers(for: app) }.value
-            guard selectedApp == app else { return }
+            guard selectedApp?.id == app.id else { return }
             leftovers = found
             selectedLeftovers = Set(found.map(\.id))
         }

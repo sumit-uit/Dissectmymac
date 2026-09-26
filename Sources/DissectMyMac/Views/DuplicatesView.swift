@@ -36,9 +36,9 @@ struct DuplicatesView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if !hasScanned {
                 ContentUnavailableView("Find duplicate files", systemImage: "doc.on.doc",
-                                       description: Text("Files are grouped by size, then compared with SHA-256 hashes."))
+                                       description: Text("Files are grouped by size, then compared with SHA-256 hashes.")).frame(maxHeight: .infinity)
             } else if groups.isEmpty {
-                ContentUnavailableView("No duplicates found", systemImage: "checkmark.circle")
+                ContentUnavailableView("No duplicates found", systemImage: "checkmark.circle").frame(maxHeight: .infinity)
             } else {
                 HStack {
                     Text("\(groups.count) groups · \(ByteFormat.string(groups.reduce(0) { $0 + $1.wastedBytes })) reclaimable")

@@ -24,9 +24,9 @@ struct JunkCleanerView: View {
             } else if !hasScanned {
                 ContentUnavailableView("Find reclaimable space",
                                        systemImage: "sparkles",
-                                       description: Text("Only files that apps or macOS recreate on demand are pre-selected."))
+                                       description: Text("Only files that apps or macOS recreate on demand are pre-selected.")).frame(maxHeight: .infinity)
             } else if results.isEmpty {
-                ContentUnavailableView("Your Mac is clean", systemImage: "checkmark.circle")
+                ContentUnavailableView("Your Mac is clean", systemImage: "checkmark.circle").frame(maxHeight: .infinity)
             } else {
                 List {
                     ForEach(JunkCategory.Group.allCases, id: \.self) { group in
