@@ -6,6 +6,11 @@ public struct DuplicateGroup: Identifiable, Sendable, Hashable {
     public let fileSize: Int64
     public let urls: [URL]
 
+    public init(fileSize: Int64, urls: [URL]) {
+        self.fileSize = fileSize
+        self.urls = urls
+    }
+
     /// Space recovered by keeping one copy and removing the rest.
     public var wastedBytes: Int64 { fileSize * Int64(max(0, urls.count - 1)) }
 }
