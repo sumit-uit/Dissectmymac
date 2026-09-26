@@ -27,10 +27,12 @@ struct UninstallerView: View {
                 Button("Choose App…") { if let url = FinderActions.chooseApp() { select(url: url) } }
             }
             HSplitView {
-                appList.frame(minWidth: 260, idealWidth: 300, maxWidth: 400)
-                detail.frame(minWidth: 400, maxWidth: .infinity)
+                appList.frame(minWidth: 260, idealWidth: 300, maxWidth: 400, maxHeight: .infinity)
+                detail.frame(minWidth: 400, maxWidth: .infinity, maxHeight: .infinity)
             }
+            .frame(maxHeight: .infinity)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .dropDestination(for: URL.self) { urls, _ in
             guard let url = urls.first(where: { $0.pathExtension == "app" }) else { return false }
             select(url: url)
@@ -62,7 +64,9 @@ struct UninstallerView: View {
                                 .font(.caption).foregroundStyle(.secondary)
                         }
                         Spacer()
-                        Text(ByteFormat.string(app.size)).monospacedDigit().foregroundStyle(.secondary)
+                        if app.size > 0 {
+                            Text(ByteFormat.string(app.size)).monospacedDigit().foregroundStyle(.secondary)
+                        }
                     }
                     .tag(app.id)
                 }
@@ -131,9 +135,15 @@ struct UninstallerView: View {
     }
 
     private func loadApps() async {
-        isLoading = true
-        apps = await Task.detached { AppCatalog.installedApps() }.value
+        isLoading = apps.isEmpty
+        // Show the list immediately, then fill in sizes (measuring every app bundle is slow).
+        apps = await Task.detached { AppCatalog.installedApps(computeSizes: false) }.value
         isLoading = false
+        let sized = await Task.detached { AppCatalog.installedApps(computeSizes: true) }.value
+        apps = sized
+        if let selected = selectedApp, let updated = sized.first(where: { $0.id == selected.id }) {
+            selectedApp = updated
+        }
     }
 
     private func select(url: URL) {

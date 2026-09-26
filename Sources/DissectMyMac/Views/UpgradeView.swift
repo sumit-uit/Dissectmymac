@@ -117,7 +117,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            .padding()
+            .formStyle(.grouped)
             .tabItem { Label("General", systemImage: "gearshape") }
 
             Form {
@@ -132,17 +132,17 @@ struct SettingsView: View {
                     Link("Buy Pro (\(LicenseManager.price))", destination: LicenseManager.purchaseURL)
                 }
             }
-            .padding()
+            .formStyle(.grouped)
             .tabItem { Label("License", systemImage: "key") }
 
             Form {
                 Text("DissectMyMac analyzes everything on your Mac. No files, file names or usage data are ever uploaded. There is no account and no analytics.")
                     .fixedSize(horizontal: false, vertical: true)
             }
-            .padding()
+            .formStyle(.grouped)
             .tabItem { Label("Privacy", systemImage: "hand.raised") }
         }
-        .frame(width: 540, height: 380)
+        .frame(width: 540, height: 420)
         .sheet(item: $license.upgradePrompt) { feature in
             UpgradeView(highlight: feature).environmentObject(license)
         }

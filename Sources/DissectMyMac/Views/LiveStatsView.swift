@@ -32,6 +32,10 @@ final class StatsModel: ObservableObject {
 
     func startProcesses() {
         processSubscribers += 1
+        if processSubscribers == 1 {
+            // Prime the CPU counters so the next tick has a delta to compare against.
+            _ = processMonitor.sample()
+        }
         start()
     }
 

@@ -11,7 +11,7 @@ struct LargeFilesView: View {
 
     @EnvironmentObject private var model: AppModel
     @State private var mode: Mode = .largest
-    @State private var minimumMB: Double = 100
+    @State private var minimumMB: Double = 50
     @State private var selection = Set<FileNode.ID>()
 
     private var files: [FileNode] {
@@ -43,8 +43,8 @@ struct LargeFilesView: View {
             } else {
                 let files = self.files
                 HStack {
-                    Text("Minimum size: \(Int(minimumMB)) MB")
-                    Slider(value: $minimumMB, in: 10...2000, step: 10).frame(width: 240)
+                    Text("Minimum size: \(Int(minimumMB.rounded())) MB")
+                    Slider(value: $minimumMB, in: 1...2000).frame(width: 240)
                     Spacer()
                     Text("\(files.count) files · \(ByteFormat.string(files.reduce(0) { $0 + $1.size }))")
                         .foregroundStyle(.secondary)
@@ -63,6 +63,13 @@ struct LargeFilesView: View {
                     }
                     .width(110)
                     TableColumn("Location") { Text($0.url.deletingLastPathComponent().path).foregroundStyle(.secondary) }
+                }
+                .overlay {
+                    if files.isEmpty {
+                        ContentUnavailableView("No files over \(Int(minimumMB.rounded())) MB",
+                                               systemImage: "doc.badge.clock",
+                                               description: Text("Lower the minimum size to see smaller files."))
+                    }
                 }
                 .contextMenu(forSelectionType: FileNode.ID.self) { ids in
                     let urls = files.filter { ids.contains($0.id) }.map(\.url)

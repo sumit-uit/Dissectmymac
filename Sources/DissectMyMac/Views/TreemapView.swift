@@ -33,6 +33,8 @@ struct TreemapView: View {
                     context.fill(path, with: .color(tile.color.opacity(isHovered ? 1 : (tile.isNested ? 0.75 : 0.9))))
                     if isHovered {
                         context.stroke(path, with: .color(.white), lineWidth: 2)
+                    } else if tile.isNested {
+                        context.stroke(path, with: .color(.black.opacity(0.18)), lineWidth: 1)
                     }
                     if !tile.isNested, rect.width > 50, rect.height > 16 {
                         let label = Text("\(tile.node.name)  \(ByteFormat.string(tile.node.size))")

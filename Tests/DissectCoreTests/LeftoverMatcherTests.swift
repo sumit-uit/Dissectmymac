@@ -34,6 +34,9 @@ final class LeftoverMatcherTests: XCTestCase {
         XCTAssertFalse(LeftoverMatcher.looksLikeBundleIdentifier("Spotify"))
         XCTAssertTrue(LeftoverMatcher.isProtected("com.apple.Safari"))
         XCTAssertFalse(LeftoverMatcher.isProtected("com.spotify.client"))
+        XCTAssertTrue(LeftoverMatcher.isProtected("group.is.workflow.my.app"))
+        XCTAssertTrue(LeftoverMatcher.isProtected("com.dissectmymac.app"))
+        XCTAssertTrue(LeftoverMatcher.isProtected("com.example.uitests.xctrunner"))
     }
 
     func testSafetyPolicy() {

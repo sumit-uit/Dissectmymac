@@ -17,8 +17,8 @@ struct DuplicatesView: View {
             SectionHeader(title: "Duplicate Finder",
                           subtitle: "Byte-for-byte identical files in the scanned folder. Names don't matter.") {
                 HStack {
-                    Text("Min \(Int(minimumMB)) MB")
-                    Slider(value: $minimumMB, in: 0...500, step: 1).frame(width: 140)
+                    Text("Min \(Int(minimumMB.rounded())) MB")
+                    Slider(value: $minimumMB, in: 0...500).frame(width: 140)
                     Button(hasScanned ? "Rescan" : "Find Duplicates") { findDuplicates() }
                         .buttonStyle(.borderedProminent)
                         .disabled(model.tree == nil || isRunning)

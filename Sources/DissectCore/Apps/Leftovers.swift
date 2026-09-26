@@ -106,8 +106,13 @@ public enum LeftoverMatcher {
     /// Identifiers that belong to macOS itself and should never be flagged as orphans.
     public static func isProtected(_ identifier: String) -> Bool {
         let id = identifier.lowercased()
-        let prefixes = ["com.apple.", "group.com.apple.", "apple.", "com.microsoft.autoupdate"]
-        return prefixes.contains { id.hasPrefix($0) } || id.hasPrefix("systemgroup.")
+        let prefixes = [
+            "com.apple.", "group.com.apple.", "apple.", "systemgroup.",
+            "is.workflow.", "group.is.workflow.",     // Apple Shortcuts (legacy Workflow identifiers)
+            "org.swift.", "com.microsoft.autoupdate", // developer toolchains / shared updaters
+            "com.dissectmymac.",                      // ourselves
+        ]
+        return prefixes.contains { id.hasPrefix($0) } || id.hasSuffix(".xctrunner")
     }
 
     /// Whether `identifier` is owned by any installed app (exact, child, or parent identifier match).
